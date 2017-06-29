@@ -55,11 +55,10 @@ def un_zip(source_file, output_dir):
 
 def deep_list(path, offset = 6, dest_dir = os.getcwd()):
   print path, len(path)
-  size = len(path) + offset
+  size = len(path) + int(offset)
   for root, dirs, files in os.walk(path, topdown = False):
     for name in files:
       file_path = os.path.join(root, name)
-      print file_path
       dest_file = os.path.join(dest_dir, file_path[size:])
       rm_if_exists(dest_file)
       dir, file = os.path.split(dest_file)

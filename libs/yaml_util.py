@@ -2,10 +2,13 @@
 import os, time, string
 import yaml
 class Options(object):
-  def __init__(self, path):
+  def __init__(self, path = None):
     self.path = path
-    self.is_init = False
-
+    if path is None:
+      self.is_init = True
+      self.options = {}
+    else:
+      self.is_init = False
 
   def load(self):
     fr = open(self.path, 'r')
@@ -14,14 +17,14 @@ class Options(object):
       self.options = {}
     self.is_init = True
 
-  def get(self, key = None):
+  def get(self, key = None, dfv = None):
     if self.is_init:
       if key is None:
         return self.options
       if key in self.options.keys():
         return self.options[key]
       else:
-        return None
+        return dfv
     
     self.load()
     return self.get(key)

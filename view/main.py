@@ -3,7 +3,9 @@ import os, time, string, json, threading
 import wx
 from libs.fpm import FpmLib 
 import libs.file_util as fu
+from libs.yaml_util import Options
 import requests
+import subprocess
 
 TAG = 'BasicView'
 class MainApp(wx.Frame):
@@ -12,7 +14,6 @@ class MainApp(wx.Frame):
     self.version = '0.0.1'
     self.on_create()
     
-
   def ping_server(self):
     try:
       data = self.fpm.ping() 
@@ -25,12 +26,18 @@ class MainApp(wx.Frame):
 
   def check_version(self):
     try:
-      data = self.fpm.call_func('application.checkVersion',{ 'app': 'game-plugin'}) 
+      data = self.fpm.call_func('application.checkVersion', { 'app': self.options.get('app', 'game-plugin')}) 
       return data
     except Exception as e:
       return None
 
   def on_create(self):
+    # load config
+    path =  os.path.join(os.getcwd(), 'update.yaml')
+    if fu.exists(path):
+      self.options = Options(path)
+    else:
+      self.options = Options()
     # make cache dir
     fu.mkdir_if_not_exists('cache')
     
@@ -43,7 +50,7 @@ class MainApp(wx.Frame):
         if self.version != version['version']:
           print ('Download URL: ' + version['download'])
           self.download(version['download'])
-        
+          child = subprocess.Popen([self.options.get('main', 'Jackpot Robot.exe')])
         self.alert(u'OK')
         wx.Exit()
     else:
@@ -72,14 +79,11 @@ class MainApp(wx.Frame):
     fu.un_zip(os.path.join(os.getcwd(), 'file.zip'), os.path.join(os.getcwd(), 'cache'))
     self.copy()
 
-
-
   def clean(self):
     fu.rmdir_if_exists('cache')
 
   def copy(self):
-    # tree deep copy
-    fu.deep_list(os.path.join(os.getcwd(), './cache'))
+    fu.deep_list(os.path.join(os.getcwd(), './cache'), offset = self.options.get('offset', 6))
     self.clean()
 
   def alert(self, message):
