@@ -26,7 +26,7 @@ class MainApp(wx.Frame):
 
   def check_version(self):
     try:
-      data = self.fpm.call_func('application.checkVersion', { 'app': self.options.get('app', 'game-plugin')}) 
+      data = self.fpm.call_func('application.checkVersion', { 'app': self.options.get('app', 'eggs-plugin')}) 
       return data
     except Exception as e:
       return None
@@ -51,7 +51,7 @@ class MainApp(wx.Frame):
           print ('Download URL: ' + version['download'])
           self.download(version['download'])
           child = subprocess.Popen([self.options.get('main', 'Jackpot Robot.exe')])
-        self.alert(u'OK')
+        # self.alert(u'OK')
         wx.Exit()
     else:
       self.alert('Offline')
