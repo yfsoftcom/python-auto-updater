@@ -6,12 +6,17 @@ import libs.file_util as fu
 from libs.yaml_util import Options
 import requests
 import subprocess
+import libs.logger as logger
+
+logger = logger.getLogger()
+
+VERSION = '0.0.1'
 
 TAG = 'BasicView'
 class MainApp(wx.Frame):
   def __init__(self):
     self.fpm = FpmLib()
-    self.version = '0.0.1'
+    self.version = VERSION
     self.on_create()
     
   def ping_server(self):
@@ -50,8 +55,9 @@ class MainApp(wx.Frame):
         if self.version != version['version']:
           print ('Download URL: ' + version['download'])
           self.download(version['download'])
-          child = subprocess.Popen([self.options.get('main', 'Jackpot Robot.exe')])
-        # self.alert(u'OK')
+          autorun = self.options.get('main', None)
+          if autorun != None:
+            child = subprocess.Popen([autorun])
         wx.Exit()
     else:
       self.alert('Offline')
@@ -81,6 +87,7 @@ class MainApp(wx.Frame):
 
   def clean(self):
     fu.rmdir_if_exists('cache')
+    fu.rm_if_exists('file.zip')
 
   def copy(self):
     fu.deep_list(os.path.join(os.getcwd(), './cache'), offset = self.options.get('offset', 6))
