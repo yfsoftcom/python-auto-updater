@@ -56,3 +56,20 @@ def make_zip(source_dir, output_filename):
       arcname = pathfile[pre_len:].strip(os.path.sep)   #相对路径
       zipf.write(pathfile, arcname)
   zipf.close()
+
+
+def un_zip(source_file, output_dir):
+   zipf = zipfile.ZipFile(source_file)
+   zipf.extractall(output_dir)
+   zipf.close()
+
+def deep_list(path, offset = 6, dest_dir = os.getcwd()):
+   size = len(path) + int(offset)
+   for root, dirs, files in os.walk(path, topdown = False):
+     for name in files:
+       file_path = os.path.join(root, name)
+       dest_file = os.path.join(dest_dir, file_path[size:])
+       rm_if_exists(dest_file)
+       dir, file = os.path.split(dest_file)
+       mkdir_if_not_exists(dir)
+       copy(os.path.join(root, name), dest_file)

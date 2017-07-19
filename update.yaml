@@ -1,2 +1,1 @@
-app: 'desktop-plugin' # 获取 fpm的app version信息
-main: 'Auto Open Desktop Robot.exe'              # 完成更新后自动执行的 exe
+app: 'eggs-plugin'
