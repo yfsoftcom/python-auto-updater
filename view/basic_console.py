@@ -12,6 +12,7 @@ class BasicConsole(object):
     self.logger = getLogger()
     self.presenter = None
     self.version = VERSION
+    print '\033[1;32;40m'
     print 'Version: %s' % (self.version)
     self.on_create()
 
